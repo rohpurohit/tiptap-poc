@@ -1,0 +1,37 @@
+{
+  "name": "huddlpoc",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@dhaiwat10/react-link-preview": "^1.14.0",
+    "@hocuspocus/provider": "^1.0.0-alpha.36",
+    "@tiptap/core": "^2.0.0-beta.176",
+    "@tiptap/extension-collaboration": "^2.0.0-beta.33",
+    "@tiptap/extension-floating-menu": "^2.0.0-beta.51",
+    "@tiptap/extension-hard-break": "^2.0.0-beta.30",
+    "@tiptap/extension-image": "^2.0.0-beta.27",
+    "@tiptap/extension-link": "^2.0.0-beta.38",
+    "@tiptap/extension-paragraph": "^2.0.0-beta.23",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.48",
+    "@tiptap/react": "^2.0.0-beta.109",
+    "@tiptap/starter-kit": "^2.0.0-beta.185",
+    "@tiptap/suggestion": "^2.0.0-beta.92",
+    "prosemirror-tables": "^1.1.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "styled-components": "^5.3.5",
+    "y-webrtc": "^10.2.3",
+    "yjs": "^13.5.38"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^1.3.0",
+    "vite": "^2.9.9"
+  }
+}
