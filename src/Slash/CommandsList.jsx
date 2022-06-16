@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import styles from "../styles.css";
+import styles from "../index.css";
 class CommandsList extends Component {
   state = {
     selectedIndex: 0,

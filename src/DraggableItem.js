@@ -1,6 +1,5 @@
 import { Extension } from "@tiptap/core";
 import { NodeSelection, Plugin, PluginKey } from "prosemirror-state";
-import { EditorView } from "prosemirror-view";
 const DragHandler = Extension.create({
   name: "dragHandler",
 

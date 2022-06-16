@@ -1,4 +1,5 @@
 import React, { useCallback, useRef } from "react";
+import "./styles.css";
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -30,13 +31,21 @@ const MenuBar = ({ editor }) => {
       <div
         style={{
           display: "flex",
-          gap: "0.2em",
+          gap: "0.1em",
+          flexWrap: "wrap",
         }}
       >
-        <button onClick={() => inputImage.current.click()}>Add Image</button>
+        <button
+          onClick={() => inputImage.current.click()}
+          className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+        >
+          Add Image
+        </button>
         <button
           onClick={addIframe}
-          className={editor.isActive("strike") ? "is-active" : ""}
+          className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+            editor.isActive("strike") ? "is-active" : ""
+          }`}
         >
           Add video url
         </button>
@@ -48,37 +57,53 @@ const MenuBar = ({ editor }) => {
         />
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={editor.isActive("bold") ? "is-active" : ""}
+          className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+            editor.isActive("bold") ? "is-active" : ""
+          }`}
         >
           bold
         </button>
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={editor.isActive("italic") ? "is-active" : ""}
+          className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+            editor.isActive("italic") ? "is-active" : ""
+          }`}
         >
           italic
         </button>
         <button
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={editor.isActive("strike") ? "is-active" : ""}
+          className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+            editor.isActive("strike") ? "is-active" : ""
+          }`}
         >
           strike
         </button>
         <button
           onClick={() => editor.chain().focus().toggleCode().run()}
-          className={editor.isActive("code") ? "is-active" : ""}
+          className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+            editor.isActive("code") ? "is-active" : ""
+          }`}
         >
           code
         </button>
-        <button onClick={() => editor.chain().focus().unsetAllMarks().run()}>
+        <button
+          onClick={() => editor.chain().focus().unsetAllMarks().run()}
+          className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+        >
           clear marks
         </button>
-        <button onClick={() => editor.chain().focus().clearNodes().run()}>
+        <button
+          onClick={() => editor.chain().focus().clearNodes().run()}
+          className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+        >
           clear nodes
         </button>
         <button
           onClick={() => editor.chain().focus().setParagraph().run()}
-          className={editor.isActive("paragraph") ? "is-active" : ""}
+          className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+            editor.isActive("paragraph") ? "is-active" : ""
+          }`}
         >
           paragraph
         </button>
@@ -86,9 +111,9 @@ const MenuBar = ({ editor }) => {
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 1 }).run()
           }
-          className={
+          className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
             editor.isActive("heading", { level: 1 }) ? "is-active" : ""
-          }
+          }`}
         >
           h1
         </button>
@@ -96,9 +121,9 @@ const MenuBar = ({ editor }) => {
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
-          className={
+          className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
             editor.isActive("heading", { level: 2 }) ? "is-active" : ""
-          }
+          }`}
         >
           h2
         </button>
@@ -106,88 +131,102 @@ const MenuBar = ({ editor }) => {
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 3 }).run()
           }
-          className={
+          className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
             editor.isActive("heading", { level: 3 }) ? "is-active" : ""
-          }
+          }`}
         >
           h3
         </button>
-        <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 4 }).run()
-          }
-          className={
-            editor.isActive("heading", { level: 4 }) ? "is-active" : ""
-          }
-        >
-          h4
-        </button>
-        <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 5 }).run()
-          }
-          className={
-            editor.isActive("heading", { level: 5 }) ? "is-active" : ""
-          }
-        >
-          h5
-        </button>
-        <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 6 }).run()
-          }
-          className={
-            editor.isActive("heading", { level: 6 }) ? "is-active" : ""
-          }
-        >
-          h6
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={editor.isActive("bulletList") ? "is-active" : ""}
-        >
-          bullet list
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={editor.isActive("orderedList") ? "is-active" : ""}
-        >
-          ordered list
-        </button>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          gap: "0.2em",
-          marginTop: "0.2em",
-        }}
-      >
-        <button
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className={editor.isActive("codeBlock") ? "is-active" : ""}
-        >
-          code block
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={editor.isActive("blockquote") ? "is-active" : ""}
-        >
-          blockquote
-        </button>
-        <button
-          onClick={() => editor.chain().focus().setHorizontalRule().run()}
-        >
-          horizontal rule
-        </button>
-        <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-          hard break
-        </button>
-        <button onClick={() => editor.chain().focus().undo().run()}>
-          undo
-        </button>
-        <button onClick={() => editor.chain().focus().redo().run()}>
-          redo
-        </button>
+        <div>
+          <button
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 4 }).run()
+            }
+            className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+              editor.isActive("heading", { level: 4 }) ? "is-active" : ""
+            }`}
+          >
+            h4
+          </button>
+          <button
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 5 }).run()
+            }
+            className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+              editor.isActive("heading", { level: 5 }) ? "is-active" : ""
+            }`}
+          >
+            h5
+          </button>
+          <button
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 6 }).run()
+            }
+            className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+              editor.isActive("heading", { level: 6 }) ? "is-active" : ""
+            }`}
+          >
+            h6
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+              editor.isActive("bulletList") ? "is-active" : ""
+            }`}
+          >
+            bullet list
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+              editor.isActive("orderedList") ? "is-active" : ""
+            }`}
+          >
+            ordered list
+          </button>
+
+          <button
+            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+              editor.isActive("codeBlock") ? "is-active" : ""
+            }`}
+          >
+            code block
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            className={`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+              editor.isActive("blockquote") ? "is-active" : ""
+            }`}
+          >
+            blockquote
+          </button>
+
+          <button
+            onClick={() => editor.chain().focus().setHorizontalRule().run()}
+            className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+          >
+            horizontal rule
+          </button>
+          <button
+            onClick={() => editor.chain().focus().setHardBreak().run()}
+            className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+          >
+            hard break
+          </button>
+          <button
+            onClick={() => editor.chain().focus().undo().run()}
+            className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+          >
+            undo
+          </button>
+          <button
+            onClick={() => editor.chain().focus().redo().run()}
+            className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+          >
+            redo
+          </button>
+        </div>
       </div>
     </>
   );
