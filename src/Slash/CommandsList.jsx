@@ -64,15 +64,23 @@ class CommandsList extends Component {
       <div className="items">
         {items.map((item, index) => {
           return (
-            <button
-              className={`item ${
+            <article
+              className={`item flex ${
                 index === this.state.selectedIndex ? "is-selected" : ""
               }`}
               key={index}
               onClick={() => this.selectItem(index)}
             >
-              {item.element || item.title}
-            </button>
+              <span
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: item.highlightedTitle || item.title,
+                  }}
+                />
+              </span>
+            </article>
           );
         })}
       </div>
