@@ -21,6 +21,8 @@ import "./styles.css";
 import format from "date-fns/format";
 import { v4 as uuidv4 } from "uuid";
 import { Comment } from "./Comments/Comment";
+import { Button, Divider } from "@mui/material";
+import { Tabs } from "./styles";
 
 const dateTimeFormat = "dd.MM.yyyy HH:mm";
 
@@ -258,9 +260,13 @@ const Tiptap = () => {
         <h2 className="text-3xl font-bold ">Tiptap Editor</h2>
         <MenuBar editor={editor} />
         <section className="buttons-section">
-          <button onClick={() => toggleCommentMode()} type="button">
+          <Button
+            variant="contained"
+            onClick={() => toggleCommentMode()}
+            type="button"
+          >
             {isCommentModeOn ? "Comment mode ON" : "Comment mode OFF"}
-          </button>
+          </Button>
         </section>
 
         <div>
@@ -276,7 +282,9 @@ const Tiptap = () => {
               marginRight: "1em",
             }}
           />
-          <button onClick={handleNewTemplate}>Create</button>
+          <Button variant="contained" onClick={handleNewTemplate}>
+            Create
+          </Button>
         </div>
         <main style={{ display: "flex" }}>
           <div style={{ flex: "1 1 30%", marginRight: "4em" }}>
@@ -295,21 +303,16 @@ const Tiptap = () => {
               <div
                 style={{
                   display: "flex",
-                  marginBottom: "2em",
+                  marginBottom: "1em",
                 }}
               >
-                <button
-                  style={{ flex: "1 1 0" }}
-                  onClick={() => setActiveTab(0)}
-                >
+                <Tabs active={activeTab === 0} onClick={() => setActiveTab(0)}>
                   Templates
-                </button>
-                <button
-                  style={{ flex: "1 1 0" }}
-                  onClick={() => setActiveTab(1)}
-                >
+                </Tabs>
+                <Divider orientation="vertical" flexItem />
+                <Tabs active={activeTab === 1} onClick={() => setActiveTab(1)}>
                   Comments
-                </button>
+                </Tabs>
               </div>
               {activeTab === 0 && (
                 <div
@@ -321,7 +324,8 @@ const Tiptap = () => {
                 >
                   {snippets.map(({ name, content }) => {
                     return (
-                      <button
+                      <Button
+                        variant="contained"
                         draggable="true"
                         className="snippet"
                         key={`snippet-${name}`}
@@ -335,7 +339,7 @@ const Tiptap = () => {
                         onDragStart={(e) => onDragStart(e, content)}
                       >
                         {name}
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
@@ -381,13 +385,19 @@ const Tiptap = () => {
                             />
 
                             <section>
-                              <button onClick={() => setCommentText("")}>
+                              <Button
+                                variant="contained"
+                                onClick={() => setCommentText("")}
+                              >
                                 Clear
-                              </button>
+                              </Button>
 
-                              <button onClick={() => setComment()}>
+                              <Button
+                                variant="contained"
+                                onClick={() => setComment()}
+                              >
                                 Add (<kbd className="">Ent</kbd>)
-                              </button>
+                              </Button>
                             </section>
                           </section>
                         )}
