@@ -23,6 +23,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Comment } from "./Comments/Comment";
 import { Button, Divider } from "@mui/material";
 import { Tabs } from "./styles";
+import * as Y from "yjs";
 
 const dateTimeFormat = "dd.MM.yyyy HH:mm";
 
@@ -52,6 +53,8 @@ const snippets = [
 //   url: "ws://127.0.0.1:1234",
 //   name: "example-document",
 // });
+const ydoc = new Y.Doc();
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Tiptap = () => {
   const [newTemplateName, setNewTemplateName] = useState("");
@@ -258,7 +261,6 @@ const Tiptap = () => {
         }}
       >
         <h2 className="text-3xl font-bold ">Tiptap Editor</h2>
-        <MenuBar editor={editor} />
         <section className="buttons-section">
           <Button
             variant="contained"
@@ -267,9 +269,6 @@ const Tiptap = () => {
           >
             {isCommentModeOn ? "Comment mode ON" : "Comment mode OFF"}
           </Button>
-        </section>
-
-        <div>
           <input
             type="text"
             placeholder="Create New template"
@@ -279,15 +278,16 @@ const Tiptap = () => {
               padding: "0.6em",
               border: "1px solid #ccc",
               borderRadius: "4px",
-              marginRight: "1em",
+              marginLeft: "1em",
             }}
           />
           <Button variant="contained" onClick={handleNewTemplate}>
             Create
           </Button>
-        </div>
+        </section>
         <main style={{ display: "flex" }}>
           <div style={{ flex: "1 1 30%", marginRight: "4em" }}>
+            <MenuBar editor={editor} />
             <EditorContent className="editor" editor={editor} />
           </div>
           <div
