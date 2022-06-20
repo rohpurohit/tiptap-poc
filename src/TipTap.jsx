@@ -24,6 +24,9 @@ import { Comment } from "./Comments/Comment";
 import { Button, Divider } from "@mui/material";
 import { Tabs } from "./styles";
 import * as Y from "yjs";
+import Collaboration from "@tiptap/extension-collaboration";
+import { WebrtcProvider } from "y-webrtc";
+import Placeholder from "@tiptap/extension-placeholder";
 
 const dateTimeFormat = "dd.MM.yyyy HH:mm";
 
@@ -53,7 +56,10 @@ const snippets = [
 //   url: "ws://127.0.0.1:1234",
 //   name: "example-document",
 // });
-const ydoc = new Y.Doc();
+// const ydoc = new Y.Doc();
+// const provider = new WebrtcProvider("your-room-name", ydoc, {
+//   signaling: ["ws://localhost:4444"],
+// });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Tiptap = () => {
@@ -73,14 +79,24 @@ const Tiptap = () => {
           render: renderItems,
         },
       }),
+      // Collaboration.configure({
+      //   document: ydoc,
+      // }),
+      Placeholder.configure({
+        placeholder: "write something",
+        placeholder: ({ node }) => {
+          if (node.type.name === "paragraph") {
+            return "use / command to see different options";
+          }
+        },
+      }),
       DragHandler,
       CustomParagraph,
       Iframe,
       PasteHandler,
       SnippetExtension,
     ],
-    content: `<p> use / command to see different options</p>
-    <ul>
+    content: `<ul>
       <li>Select text to comment</li>
       <li>Drag from templates on the right</li>
       <li>Copy link to see link preview</li>
