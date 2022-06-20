@@ -37,6 +37,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Mention from "@tiptap/extension-mention";
 import suggestion from "./Mentions/Suggestion";
 import { getSuggestions } from "./Mentions/SuggestionItems";
+import { HocuspocusProvider } from "@hocuspocus/provider";
 
 const dateTimeFormat = "dd.MM.yyyy HH:mm";
 
@@ -62,10 +63,10 @@ const snippets = [
       "<p><strong>This is bold.</strong> <em>This is italic. </em><code>This is code</code></p>",
   },
 ];
-// const provider = new HocuspocusProvider({
-//   url: "ws://127.0.0.1:1234",
-//   name: "example-document",
-// });
+const provider = new HocuspocusProvider({
+  url: "ws://127.0.0.1:1234",
+  name: "example-document",
+});
 // const ydoc = new Y.Doc();
 // const provider = new WebrtcProvider("your-room-name", ydoc, {
 //   signaling: ["ws://localhost:4444"],
@@ -89,9 +90,9 @@ const Tiptap = () => {
           render: renderItems,
         },
       }),
-      // Collaboration.configure({
-      //   document: ydoc,
-      // }),
+      Collaboration.configure({
+        document: provider.document,
+      }),
       Placeholder.configure({
         placeholder: "use / command to see different optionsg",
       }),
