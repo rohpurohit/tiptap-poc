@@ -38,6 +38,7 @@ import Mention from "@tiptap/extension-mention";
 import suggestion from "./Mentions/Suggestion";
 import { getSuggestions } from "./Mentions/SuggestionItems";
 import { HocuspocusProvider } from "@hocuspocus/provider";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 
 const dateTimeFormat = "dd.MM.yyyy HH:mm";
 
@@ -64,7 +65,7 @@ const snippets = [
   },
 ];
 const provider = new HocuspocusProvider({
-  url: "ws://127.0.0.1:1234",
+  url: "https://b14d-45-119-57-235.in.ngrok.io",
   name: "example-document",
 });
 // const ydoc = new Y.Doc();
@@ -93,6 +94,13 @@ const Tiptap = () => {
       Collaboration.configure({
         document: provider.document,
       }),
+      // CollaborationCursor.configure({
+      //   provider,
+      //   user: {
+      //     name: "Cyndi Lauper",
+      //     color: "#f783ac",
+      //   },
+      // }),
       Placeholder.configure({
         placeholder: "use / command to see different optionsg",
       }),
