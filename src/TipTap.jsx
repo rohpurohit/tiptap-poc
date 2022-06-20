@@ -22,11 +22,21 @@ import format from "date-fns/format";
 import { v4 as uuidv4 } from "uuid";
 import { Comment } from "./Comments/Comment";
 import { Button, Divider } from "@mui/material";
-import { Tabs } from "./styles";
+import {
+  AddClearBtnDiv,
+  CommentBox,
+  CommentDetails,
+  CommentIn,
+  Tabs,
+  TemplateCommentDiv,
+} from "./styles";
 import * as Y from "yjs";
 import Collaboration from "@tiptap/extension-collaboration";
 import { WebrtcProvider } from "y-webrtc";
 import Placeholder from "@tiptap/extension-placeholder";
+import Mention from "@tiptap/extension-mention";
+import suggestion from "./Mentions/Suggestion";
+import { getSuggestions } from "./Mentions/SuggestionItems";
 
 const dateTimeFormat = "dd.MM.yyyy HH:mm";
 
@@ -88,6 +98,15 @@ const Tiptap = () => {
           if (node.type.name === "paragraph") {
             return "use / command to see different options";
           }
+        },
+      }),
+      Mention.configure({
+        HTMLAttributes: {
+          class: "mention",
+        },
+        suggestion: {
+          items: getSuggestions,
+          render: suggestion,
         },
       }),
       DragHandler,
@@ -361,23 +380,31 @@ const Tiptap = () => {
                 </div>
               )}
               {activeTab === 1 && (
-                <div>
+                <TemplateCommentDiv>
                   {allComments.map((comment, i) => {
                     return (
-                      <article key={i + "external_comment"}>
+                      <CommentBox key={i + "external_comment"}>
                         {comment.jsonComments.comments.map((jsonComment, j) => {
                           return (
-                            <article key={`${j}_${Math.random()}`}>
-                              <div className="comment-details">
-                                <strong>{jsonComment.userName}</strong>
+                            <CommentIn key={`${j}_${Math.random()}`}>
+                              <CommentDetails className="comment-details">
+                                <ul>
+                                  <li>
+                                    <strong>
+                                      {jsonComment.userName + "  - "}
+                                    </strong>
 
-                                <span>{formatDate(jsonComment.time)}</span>
-                              </div>
+                                    <small>
+                                      {formatDate(jsonComment.time)}
+                                    </small>
+                                  </li>
+                                </ul>
+                              </CommentDetails>
 
                               <span className="content">
                                 {jsonComment.content}
                               </span>
-                            </article>
+                            </CommentIn>
                           );
                         })}
 
@@ -400,7 +427,7 @@ const Tiptap = () => {
                               className="border-none outline-none"
                             />
 
-                            <section>
+                            <AddClearBtnDiv>
                               <Button
                                 variant="contained"
                                 onClick={() => setCommentText("")}
@@ -414,13 +441,13 @@ const Tiptap = () => {
                               >
                                 Add (<kbd className="">Ent</kbd>)
                               </Button>
-                            </section>
+                            </AddClearBtnDiv>
                           </section>
                         )}
-                      </article>
+                      </CommentBox>
                     );
                   })}
-                </div>
+                </TemplateCommentDiv>
               )}
             </>
           </div>
@@ -450,9 +477,9 @@ const Tiptap = () => {
               className="border-none outline-none"
             />
 
-            <section className="flex flex-row w-full gap-1">
+            <AddClearBtnDiv>
               <button
-                className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded shadow-lg w-1/3"
+                className="cursor-pointer bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded shadow-lg w-1/3"
                 onClick={() => setCommentText("")}
               >
                 Clear
@@ -464,7 +491,7 @@ const Tiptap = () => {
               >
                 Add
               </button>
-            </section>
+            </AddClearBtnDiv>
           </section>
         </BubbleMenu>
       )}
