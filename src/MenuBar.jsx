@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import React, { useCallback, useRef } from "react";
 import "./styles.css";
-import { StyledButton } from "./styles";
+import { MenuButton } from "./styles";
 import {
   MdArrowDropDown,
   MdAutoAwesome,
@@ -74,57 +74,57 @@ const MenuBar = ({ editor }) => {
           flexWrap: "wrap",
         }}
       >
-        <Button onClick={() => inputImage.current.click()}>
+        <MenuButton onClick={() => inputImage.current.click()}>
           <MdImage />
-        </Button>
-        <Button onClick={addIframe}>
+        </MenuButton>
+        <MenuButton onClick={addIframe}>
           <MdOutlineVideoLibrary />
-        </Button>
+        </MenuButton>
         <input
           type="file"
           ref={inputImage}
           style={{ display: "none" }}
           onChange={addImage}
         />
-        <Button onClick={() => editor.chain().focus().toggleBold().run()}>
+        <MenuButton onClick={() => editor.chain().focus().toggleBold().run()}>
           <MdFormatBold />
-        </Button>
-        <Button onClick={() => editor.chain().focus().toggleItalic().run()}>
+        </MenuButton>
+        <MenuButton onClick={() => editor.chain().focus().toggleItalic().run()}>
           <MdFormatItalic />
-        </Button>
-        <Button onClick={() => editor.chain().focus().toggleStrike().run()}>
+        </MenuButton>
+        <MenuButton onClick={() => editor.chain().focus().toggleStrike().run()}>
           <MdFormatStrikethrough />
-        </Button>
-        <Button onClick={() => editor.chain().focus().toggleCode().run()}>
+        </MenuButton>
+        <MenuButton onClick={() => editor.chain().focus().toggleCode().run()}>
           <CgQuote />
-        </Button>
-        <Button onClick={() => editor.chain().focus().toggleBulletList().run()}>
+        </MenuButton>
+        <MenuButton onClick={() => editor.chain().focus().toggleBulletList().run()}>
           <MdFormatListBulleted />
-        </Button>
-        <Button
+        </MenuButton>
+        <MenuButton
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           <MdFormatListNumbered />
-        </Button>
+        </MenuButton>
 
-        <Button onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
+        <MenuButton onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
           <MdCode />
-        </Button>
-        <Button onClick={() => editor.chain().focus().toggleBlockquote().run()}>
+        </MenuButton>
+        <MenuButton onClick={() => editor.chain().focus().toggleBlockquote().run()}>
           <MdFormatQuote />
-        </Button>
+        </MenuButton>
 
-        <Button
+        <MenuButton
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
         >
           <MdHorizontalRule />
-        </Button>
-        <Button onClick={() => editor.chain().focus().undo().run()}>
+        </MenuButton>
+        <MenuButton onClick={() => editor.chain().focus().undo().run()}>
           <MdUndo />
-        </Button>
-        <Button onClick={() => editor.chain().focus().redo().run()}>
+        </MenuButton>
+        <MenuButton onClick={() => editor.chain().focus().redo().run()}>
           <MdRedo />
-        </Button>
+        </MenuButton>
       </div>
     </>
   );

@@ -11,3 +11,48 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+textarea{
+  padding: 10px;
+}
+
+.mention {
+  border: 1px solid #000;
+  border-radius: 0.4rem;
+  padding:0rem 0.3rem;
+  box-decoration-break: clone;
+}
+
+::-webkit-scrollbar {
+  width: 0.4rem;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 0.4rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-track:horizontal {
+  background: #f1f1f1; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb:horizontal {
+  background: rgb(196, 194, 194);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:horizontal:hover {
+  background: rgb(196, 194, 194); 
+}
