@@ -5,10 +5,10 @@ const DragHandler = Extension.create({
 
   addProseMirrorPlugins() {
     let nodeToBeDragged = null;
-    const HANDLER_LEFT_OFFSET = 15;
+    const HANDLER_LEFT_OFFSET = 16;
     const HANDLER_GAP = 50;
     const dragHandler = document.createElement("div");
-    dragHandler.innerHTML = "⠿";
+    dragHandler.classList.add("drag-handle");
     dragHandler.style.visibility = "hidden";
     dragHandler.style.position = "absolute";
     dragHandler.style.cursor = "grab";

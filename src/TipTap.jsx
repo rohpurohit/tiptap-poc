@@ -93,12 +93,7 @@ const Tiptap = () => {
       //   document: ydoc,
       // }),
       Placeholder.configure({
-        placeholder: "write something",
-        placeholder: ({ node }) => {
-          if (node.type.name === "paragraph") {
-            return "use / command to see different options";
-          }
-        },
+        placeholder: "use / command to see different optionsg",
       }),
       Mention.configure({
         HTMLAttributes: {
@@ -316,7 +311,11 @@ const Tiptap = () => {
               marginLeft: "1em",
             }}
           />
-          <Button variant="contained" onClick={handleNewTemplate}>
+          <Button
+            variant="contained"
+            style={{ marginLeft: "0.5em" }}
+            onClick={handleNewTemplate}
+          >
             Create
           </Button>
         </section>
