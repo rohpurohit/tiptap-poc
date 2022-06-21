@@ -147,6 +147,19 @@ const getSuggestionItems = () => {
       icon: RiCodeSSlashLine,
       shortcut: "`i`",
     },
+    {
+      title: "Draggable",
+      command: ({ editor, range }) => {
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .toggleWrap(`draggableItem`)
+          .run();
+      },
+      icon: RiH1,
+      shortcut: "`DD`",
+    }
   ];
 };
 

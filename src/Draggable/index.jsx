@@ -1,8 +1,7 @@
 import React from "react";
-import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
-import renderItems from "./Slash/renderItems";
+import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
 
-const DragHandle = () => {
+export const Dagger = (props) => {
   return (
     <NodeViewWrapper className="draggable-item">
       <div
@@ -15,5 +14,3 @@ const DragHandle = () => {
     </NodeViewWrapper>
   );
 };
-
-export default DragHandle;

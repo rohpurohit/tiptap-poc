@@ -46,6 +46,7 @@ import { getSuggestions } from "./Mentions/SuggestionItems";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import Realtime from "./Realtime";
+import DraggableItem from "./Draggable/DraggableItem";
 const dateTimeFormat = "dd.MM.yyyy HH:mm";
 
 const CustomParagraph = Paragraph.extend({
@@ -92,6 +93,7 @@ const Tiptap = () => {
     extensions: [
       StarterKit,
       Image,
+      DraggableItem,
       CustomLink.configure({
         linkOnPaste: false,
       }),
@@ -135,7 +137,22 @@ const Tiptap = () => {
       PasteHandler,
       SnippetExtension,
     ],
-    content: "",
+    content: `        <p>This is a boring paragraph.</p>
+    <div data-type="draggable-item">
+      <p>Followed by a fancy draggable item.</p>
+    </div>
+    <div data-type="draggable-item">
+      <p>And another draggable item.</p>
+      <div data-type="draggable-item">
+        <p>And a nested one.</p>
+        <div data-type="draggable-item">
+          <p>But can we go deeper?</p>
+        </div>
+      </div>
+    </div>
+    <p>Let’s finish with a boring paragraph.</p>
+    
+    `,
     onUpdate({ editor }) {
       findCommentsAndStoreValues(editor);
       setCurrentComment(editor);
@@ -371,7 +388,7 @@ const Tiptap = () => {
           </Button>
         </section>
         <main style={{ display: "flex" }}>
-          <div style={{ flex: "1 1 30%", marginRight: "4em" }}>
+          <div style={{ flex: "1 1 30%",height:"70vh", marginRight: "4em" }}>
             <MenuBar editor={editor} />
             <EditorContent className="editor" editor={editor} />
           </div>
@@ -522,7 +539,7 @@ const Tiptap = () => {
             value={inputValue}
             onChange={handleInputChange}
             onPaste={handleInputChange}
-            placeHolder={"paste figma link"}
+            placeholder={"paste figma link"}
             size="50"
           />
           <button
