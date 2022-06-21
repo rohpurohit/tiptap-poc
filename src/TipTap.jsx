@@ -103,7 +103,7 @@ const Tiptap = () => {
           render: renderItems,
         },
       }),
-      // Realtime,
+      Realtime,
       // Collaboration.configure({
       //   document: ydoc,
       // }),
