@@ -32,6 +32,7 @@ import {
   CommentBox,
   CommentDetails,
   CommentIn,
+  MainDivComments,
   Tabs,
   TemplateCommentDiv,
 } from "./styles";
@@ -78,8 +79,14 @@ const snippets = [
 //   signaling: ["wss://35.89.140.122:4444"],
 // });
 
+const ydoc = new Y.Doc();
+const provider = new WebrtcProvider("your-room-name", ydoc, {
+  signaling: ["ws://35.89.140.122:4444"],
+});
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Tiptap = () => {
+  const [isCommentModeOn, setIsCommentModeOn] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState("");
   const editor = useEditor({
     extensions: [
@@ -89,7 +96,7 @@ const Tiptap = () => {
         linkOnPaste: false,
       }),
       Embed,
-      Comment,
+      Comment.configure({ isCommentModeOn: !!isCommentModeOn }),
       Commands.configure({
         suggestion: {
           items: getSuggestionItems,
@@ -130,14 +137,18 @@ const Tiptap = () => {
     ],
     content: "",
     onUpdate({ editor }) {
-      findCommentsAndStoreValues();
+      findCommentsAndStoreValues(editor);
       setCurrentComment(editor);
     },
 
     onSelectionUpdate({ editor }) {
       setCurrentComment(editor);
-
+      setIsCommentModeOn(true);
       setIsTextSelected(!!editor.state.selection.content().size);
+    },
+
+    onCreate({ editor }) {
+      findCommentsAndStoreValues(editor);
     },
 
     editorProps: {
@@ -167,8 +178,6 @@ const Tiptap = () => {
   //  #Comments Module Start
   const [activeTab, setActiveTab] = useState(0);
 
-  const [isCommentModeOn, setIsCommentModeOn] = useState(true);
-
   const [currentUserName, setCurrentUserName] = useState("Test User");
 
   const [commentText, setCommentText] = useState("");
@@ -181,37 +190,36 @@ const Tiptap = () => {
 
   const formatDate = (d) => (d ? format(new Date(d), dateTimeFormat) : null);
 
-  const [activeCommentsInstance, setActiveCommentsInstance] = useState({});
-
+  const [activeCommentsInstance, setActiveCommentsInstance] = useState({
+    uuid: "",
+    comments: "",
+  });
   const [allComments, setAllComments] = useState([]);
   const [inputValue, setInputValue] = useState("");
 
-  const findCommentsAndStoreValues = () => {
-    const proseMirror = document.querySelector(".ProseMirror");
-
-    const comments = proseMirror?.querySelectorAll("span[data-comment]");
-
+  const findCommentsAndStoreValues = (editor) => {
     const tempComments = [];
 
-    if (!comments) {
-      setAllComments([]);
-      return;
-    }
+    editor?.state.doc.descendants((node, pos) => {
+      const { marks } = node;
+      marks.forEach((mark) => {
+        if (mark.type.name === "comment") {
+          const markComments = mark.attrs.comment;
+          const jsonComments = markComments ? JSON.parse(markComments) : null;
 
-    comments.forEach((node) => {
-      const nodeComments = node.getAttribute("data-comment");
-
-      const jsonComments = nodeComments ? JSON.parse(nodeComments) : null;
-
-      if (jsonComments !== null) {
-        tempComments.push({
-          node,
-          jsonComments,
-        });
-      }
+          if (jsonComments !== null) {
+            tempComments.push({
+              node,
+              jsonComments,
+              from: pos,
+              to: pos + (node.text?.length || 0),
+              text: node.text,
+            });
+          }
+        }
+      });
     });
-
-    setAllComments(tempComments);
+    setAllComments([...tempComments]);
   };
 
   const setCurrentComment = (editor) => {
@@ -221,9 +229,7 @@ const Tiptap = () => {
       setTimeout(() => setShowCommentMenu(newVal), 50);
 
       setShowAddCommentSection(!editor.state.selection.empty);
-
       const parsedComment = JSON.parse(editor.getAttributes("comment").comment);
-
       parsedComment.comment =
         typeof parsedComment.comments === "string"
           ? JSON.parse(parsedComment.comments)
@@ -285,6 +291,19 @@ const Tiptap = () => {
 
     if (isCommentModeOn) editor?.setEditable(false);
     else editor?.setEditable(true);
+  };
+
+  const focusContent = ({ from, to }) => {
+    editor?.chain().setTextSelection({ from, to }).run();
+  };
+
+  const handelActiveThread = (clickedComment) => {
+    focusContent({ from: clickedComment.from, to: clickedComment.to });
+    setActiveCommentsInstance({
+      uuid: clickedComment.jsonComments.uuid,
+      comments: clickedComment.jsonComments.comments,
+      comment: clickedComment.jsonComments.comments,
+    });
   };
 
   useEffect(() => {
@@ -414,68 +433,76 @@ const Tiptap = () => {
                 <TemplateCommentDiv>
                   {allComments.map((comment, i) => {
                     return (
-                      <CommentBox key={i + "external_comment"}>
-                        {comment.jsonComments.comments.map((jsonComment, j) => {
-                          return (
-                            <CommentIn key={`${j}_${Math.random()}`}>
-                              <CommentDetails className="comment-details">
-                                <ul>
-                                  <li>
-                                    <strong>
-                                      {jsonComment.userName + "  - "}
-                                    </strong>
+                      <MainDivComments
+                        key={i + "comment-box"}
+                        onClick={() => handelActiveThread(comment)}
+                      >
+                        <h3>{"  -  " + comment.text} 💬</h3>
+                        <CommentBox key={i + "external_comment"}>
+                          {comment.jsonComments.comments.map(
+                            (jsonComment, j) => {
+                              return (
+                                <CommentIn key={`${j}_${Math.random()}`}>
+                                  <CommentDetails className="comment-details">
+                                    <ul>
+                                      <li>
+                                        <strong>
+                                          {jsonComment.userName + "  - "}
+                                        </strong>
 
-                                    <small>
-                                      {formatDate(jsonComment.time)}
-                                    </small>
-                                  </li>
-                                </ul>
-                              </CommentDetails>
+                                        <small>
+                                          {formatDate(jsonComment.time)}
+                                        </small>
+                                      </li>
+                                    </ul>
+                                  </CommentDetails>
 
-                              <span className="content">
-                                {jsonComment.content}
-                              </span>
-                            </CommentIn>
-                          );
-                        })}
+                                  <span className="content">
+                                    {jsonComment.content}
+                                  </span>
+                                </CommentIn>
+                              );
+                            }
+                          )}
 
-                        {comment.jsonComments.uuid ===
-                          activeCommentsInstance.uuid && (
-                          <section>
-                            <textarea
-                              value={commentText}
-                              onInput={(e) => setCommentText(e.target.value)}
-                              onKeyPress={(e) => {
-                                if (e.keyCode === 13) {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  setComment();
-                                }
-                              }}
-                              cols={30}
-                              rows={4}
-                              placeholder="Add comment..."
-                              className="border-none outline-none"
-                            />
+                          {comment.jsonComments.uuid ===
+                            activeCommentsInstance.uuid && (
+                            <section>
+                              <textarea
+                                value={commentText}
+                                onInput={(e) => setCommentText(e.target.value)}
+                                onKeyPress={(e) => {
+                                  if (e.keyCode === 13) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setComment();
+                                  }
+                                }}
+                                cols={30}
+                                rows={4}
+                                placeholder="Add comment..."
+                                className="border-none outline-none"
+                              />
 
-                            <AddClearBtnDiv>
-                              <Button
-                                variant="contained"
-                                onClick={() => setCommentText("")}
-                              >
-                                Clear
-                              </Button>
+                              <AddClearBtnDiv>
+                                <Button
+                                  variant="contained"
+                                  onClick={() => setCommentText("")}
+                                >
+                                  Clear
+                                </Button>
 
-                              <Button
-                                variant="contained"
-                                onClick={() => setComment()}
-                              >
-                                Add (<kbd className="">Ent</kbd>)
-                              </Button>
-                            </AddClearBtnDiv>
-                          </section>
-                        )}
-                      </CommentBox>
+                                <Button
+                                  variant="contained"
+                                  onClick={() => setComment()}
+                                >
+                                  Add (<kbd className="">Ent</kbd>)
+                                </Button>
+                              </AddClearBtnDiv>
+                            </section>
+                          )}
+                        </CommentBox>
+                      </MainDivComments>
                     );
                   })}
                 </TemplateCommentDiv>
@@ -515,7 +542,7 @@ const Tiptap = () => {
           tippy-options={{ duration: 100, placement: "bottom" }}
           editor={editor}
           className="bubble-menu"
-          // shouldShow={() => (isCommentModeOn && isTextSelected && !activeCommentsInstance.uuid)}
+          // shouldShow={({editor}) => (isCommentModeOn &&!editor.state.selection.empty && !activeCommentsInstance.uuid)}
         >
           <section className="comment-adder-section bg-white shadow-lg">
             <textarea
