@@ -52,7 +52,7 @@ export default Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(Preview);
+    return ReactNodeViewRenderer(Figma);
   },
   addCommands() {
     return {

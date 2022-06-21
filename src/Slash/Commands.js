@@ -13,6 +13,21 @@ const Commands = Extension.create({
           props.command({ editor, range, props });
         },
       },
+      showMenu: false,
+    };
+  },
+
+  toggleMenu() {
+    return this.options.showMenu;
+  },
+
+  addCommands() {
+    return {
+      toggleMenu:
+        (options) =>
+        ({ commands }) => {
+          this.options.showMenu = !this.options.showMenu;
+        },
     };
   },
 

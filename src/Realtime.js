@@ -12,7 +12,7 @@ import * as Y from "yjs";
 
 const ydoc = new Y.Doc();
 const provider = new WebsocketProvider(
-  "wss://35.89.140.122:4444",
+  "wss://demos.yjs.dev",
   "tiptap-demo",
   ydoc
 );

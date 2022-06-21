@@ -96,7 +96,7 @@ const Tiptap = () => {
           render: renderItems,
         },
       }),
-      Realtime,
+      // Realtime,
       // Collaboration.configure({
       //   document: ydoc,
       // }),
@@ -131,7 +131,6 @@ const Tiptap = () => {
     content: "",
     onUpdate({ editor }) {
       findCommentsAndStoreValues();
-
       setCurrentComment(editor);
     },
 
@@ -185,6 +184,7 @@ const Tiptap = () => {
   const [activeCommentsInstance, setActiveCommentsInstance] = useState({});
 
   const [allComments, setAllComments] = useState([]);
+  const [inputValue, setInputValue] = useState("");
 
   const findCommentsAndStoreValues = () => {
     const proseMirror = document.querySelector(".ProseMirror");
@@ -291,9 +291,21 @@ const Tiptap = () => {
     setTimeout(findCommentsAndStoreValues, 100);
   }, []);
 
+  // useEffect(() => {
+  //   if (editor && editor.isFocused && inputValue.length < 1) {
+  //     editor.commands.toggleMenu();
+  //   }
+  // }, [editor, inputValue]);
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
   const shouldShow = ({ editor, view, state, oldState }) => {
-    console.log("floating", editor);
-    if (editor.storage.Commands.showFloatingMenu) {
+    const mention = editor.extensionManager.extensions.find(
+      ({ config, name }) => config.name === "extension" && name === "mention"
+    );
+    if (mention && mention.options.showMenu) {
       return true;
     }
     return false;
@@ -478,31 +490,23 @@ const Tiptap = () => {
           tippyOptions={{ duration: 100 }}
           shouldShow={shouldShow}
         >
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onPaste={handleInputChange}
+            placeHolder={"paste figma link"}
+            size="50"
+          />
           <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 1 }).run()
-            }
-            className={
-              editor.isActive("heading", { level: 1 }) ? "is-active" : ""
-            }
+            onClick={() => {
+              editor.commands.embed({ href: inputValue });
+              editor.commands.toggleMenu();
+              setInputValue("");
+              editor.commands.focus("end");
+            }}
           >
-            h1
-          </button>
-          <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 2 }).run()
-            }
-            className={
-              editor.isActive("heading", { level: 2 }) ? "is-active" : ""
-            }
-          >
-            h2
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={editor.isActive("bulletList") ? "is-active" : ""}
-          >
-            bullet list
+            submit
           </button>
         </FloatingMenu>
       )}

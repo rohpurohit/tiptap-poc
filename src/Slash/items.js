@@ -72,13 +72,13 @@ const getSuggestionItems = () => {
       icon: RiListUnordered,
       shortcut: "- L",
     },
-    {
-      title: "Task List",
-      command: ({ editor, range }) => {
-        editor.chain().focus().deleteRange(range).toggleTaskList().run();
-      },
-      icon: RiListCheck2,
-    },
+    // {
+    //   title: "Task List",
+    //   command: ({ editor, range }) => {
+    //     editor.chain().focus().deleteRange(range).toggleTaskList().run();
+    //   },
+    //   icon: RiListCheck2,
+    // },
     {
       title: "Blockquote",
       command: ({ editor, range }) => {
@@ -139,14 +139,14 @@ const getSuggestionItems = () => {
       icon: RiCodeSSlashLine,
       shortcut: "`i`",
     },
-    // {
-    //   title: "Figma",
-    //   command: ({ editor, range }) => {
-    //     // editor.chain().focus().deleteRange(range).toggleMenu().run();
-    //   },
-    //   icon: RiCodeSSlashLine,
-    //   shortcut: "`i`",
-    // },
+    {
+      title: "Figma",
+      command: ({ editor, range }) => {
+        editor.chain().focus().deleteRange(range).toggleMenu().run();
+      },
+      icon: RiCodeSSlashLine,
+      shortcut: "`i`",
+    },
   ];
 };
 
