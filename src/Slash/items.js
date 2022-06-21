@@ -139,6 +139,14 @@ const getSuggestionItems = () => {
       icon: RiCodeSSlashLine,
       shortcut: "`i`",
     },
+    // {
+    //   title: "Figma",
+    //   command: ({ editor, range }) => {
+    //     // editor.chain().focus().deleteRange(range).toggleMenu().run();
+    //   },
+    //   icon: RiCodeSSlashLine,
+    //   shortcut: "`i`",
+    // },
   ];
 };
 

@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
+import {
+  useEditor,
+  EditorContent,
+  BubbleMenu,
+  FloatingMenu,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Commands from "./Slash/Commands";
 import getSuggestionItems from "./Slash/items";
@@ -39,7 +44,7 @@ import suggestion from "./Mentions/Suggestion";
 import { getSuggestions } from "./Mentions/SuggestionItems";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
-
+import Realtime from "./Realtime";
 const dateTimeFormat = "dd.MM.yyyy HH:mm";
 
 const CustomParagraph = Paragraph.extend({
@@ -64,13 +69,13 @@ const snippets = [
       "<p><strong>This is bold.</strong> <em>This is italic. </em><code>This is code</code></p>",
   },
 ];
-const provider = new HocuspocusProvider({
-  url: "https://b14d-45-119-57-235.in.ngrok.io",
-  name: "example-document",
-});
+// const provider = new HocuspocusProvider({
+//   url: "https://b14d-45-119-57-235.in.ngrok.io",
+//   name: "example-document",
+// });
 // const ydoc = new Y.Doc();
 // const provider = new WebrtcProvider("your-room-name", ydoc, {
-//   signaling: ["ws://localhost:4444"],
+//   signaling: ["wss://35.89.140.122:4444"],
 // });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -91,9 +96,13 @@ const Tiptap = () => {
           render: renderItems,
         },
       }),
-      Collaboration.configure({
-        document: provider.document,
-      }),
+      Realtime,
+      // Collaboration.configure({
+      //   document: ydoc,
+      // }),
+      // Collaboration.configure({
+      //   document: provider.document,
+      // }),
       // CollaborationCursor.configure({
       //   provider,
       //   user: {
@@ -102,7 +111,7 @@ const Tiptap = () => {
       //   },
       // }),
       Placeholder.configure({
-        placeholder: "use / command to see different optionsg",
+        placeholder: "use / command to see different options",
       }),
       Mention.configure({
         HTMLAttributes: {
@@ -119,13 +128,7 @@ const Tiptap = () => {
       PasteHandler,
       SnippetExtension,
     ],
-    content: `<ul>
-      <li>Select text to comment</li>
-      <li>Drag from templates on the right</li>
-      <li>Copy link to see link preview</li>
-    </ul>
-    
-    `,
+    content: "",
     onUpdate({ editor }) {
       findCommentsAndStoreValues();
 
@@ -287,6 +290,14 @@ const Tiptap = () => {
   useEffect(() => {
     setTimeout(findCommentsAndStoreValues, 100);
   }, []);
+
+  const shouldShow = ({ editor, view, state, oldState }) => {
+    console.log("floating", editor);
+    if (editor.storage.Commands.showFloatingMenu) {
+      return true;
+    }
+    return false;
+  };
 
   // #Comments Module End
   return (
@@ -461,6 +472,40 @@ const Tiptap = () => {
           </div>
         </main>
       </div>
+      {editor && (
+        <FloatingMenu
+          editor={editor}
+          tippyOptions={{ duration: 100 }}
+          shouldShow={shouldShow}
+        >
+          <button
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 1 }).run()
+            }
+            className={
+              editor.isActive("heading", { level: 1 }) ? "is-active" : ""
+            }
+          >
+            h1
+          </button>
+          <button
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 2 }).run()
+            }
+            className={
+              editor.isActive("heading", { level: 2 }) ? "is-active" : ""
+            }
+          >
+            h2
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            className={editor.isActive("bulletList") ? "is-active" : ""}
+          >
+            bullet list
+          </button>
+        </FloatingMenu>
+      )}
       {editor && (
         <BubbleMenu
           tippy-options={{ duration: 100, placement: "bottom" }}
