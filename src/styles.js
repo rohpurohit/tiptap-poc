@@ -10,7 +10,7 @@ export const Tabs = styled.div`
   padding: 1em;
   border-bottom: ${({ active }) =>
     active ? "2px solid #cd853f" : "2px solid #a89e9e8c"};
-  cursor: pointer;
+  cursor: pointer !important;
 `;
 
 export const MenuButton = styled(Button)`
@@ -43,4 +43,8 @@ export const TemplateCommentDiv = styled('div')`
 export const AddClearBtnDiv = styled('div')`
   display: flex;
   gap: 10px;
+`;
+
+export const MainDivComments = styled('div')`
+  margin-bottom:16px;
 `;

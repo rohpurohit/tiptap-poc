@@ -56,3 +56,14 @@ textarea{
 ::-webkit-scrollbar-thumb:horizontal:hover {
   background: rgb(196, 194, 194); 
 }
+
+span[data-comment] {
+  background: rgba(47, 255, 238, 0.5);
+  border-radius: 5px;
+  padding:0 5px;
+  cursor: pointer;
+}
+span[data-comment]::after {
+  content: " 💬";
+  user-select: all;
+} 

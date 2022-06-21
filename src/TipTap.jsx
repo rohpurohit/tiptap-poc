@@ -22,14 +22,7 @@ import format from "date-fns/format";
 import { v4 as uuidv4 } from "uuid";
 import { Comment } from "./Comments/Comment";
 import { Button, Divider } from "@mui/material";
-import {
-  AddClearBtnDiv,
-  CommentBox,
-  CommentDetails,
-  CommentIn,
-  Tabs,
-  TemplateCommentDiv,
-} from "./styles";
+import { AddClearBtnDiv, CommentBox, CommentDetails, CommentIn, MainDivComments, Tabs, TemplateCommentDiv } from "./styles";
 import * as Y from "yjs";
 import Collaboration from "@tiptap/extension-collaboration";
 import { WebrtcProvider } from "y-webrtc";
@@ -38,7 +31,6 @@ import Mention from "@tiptap/extension-mention";
 import suggestion from "./Mentions/Suggestion";
 import { getSuggestions } from "./Mentions/SuggestionItems";
 import { HocuspocusProvider } from "@hocuspocus/provider";
-import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 
 const dateTimeFormat = "dd.MM.yyyy HH:mm";
 
@@ -64,17 +56,23 @@ const snippets = [
       "<p><strong>This is bold.</strong> <em>This is italic. </em><code>This is code</code></p>",
   },
 ];
-const provider = new HocuspocusProvider({
-  url: "https://b14d-45-119-57-235.in.ngrok.io",
-  name: "example-document",
-});
+// const provider = new HocuspocusProvider({
+//   url: "https://b14d-45-119-57-235.in.ngrok.io",
+//   name: "example-document",
+// });
 // const ydoc = new Y.Doc();
 // const provider = new WebrtcProvider("your-room-name", ydoc, {
 //   signaling: ["ws://localhost:4444"],
 // });
 
+const ydoc = new Y.Doc();
+const provider = new WebrtcProvider("your-room-name", ydoc, {
+  signaling: ["ws://35.89.140.122:4444"],
+});
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Tiptap = () => {
+  const [isCommentModeOn, setIsCommentModeOn] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState("");
   const editor = useEditor({
     extensions: [
@@ -84,15 +82,18 @@ const Tiptap = () => {
         linkOnPaste: false,
       }),
       Embed,
-      Comment,
+      Comment.configure({ isCommentModeOn: !!isCommentModeOn }),
       Commands.configure({
         suggestion: {
           items: getSuggestionItems,
           render: renderItems,
         },
       }),
+      // Collaboration.configure({
+      //   document: provider.document,
+      // }),
       Collaboration.configure({
-        document: provider.document,
+        document: ydoc,
       }),
       // CollaborationCursor.configure({
       //   provider,
@@ -127,15 +128,18 @@ const Tiptap = () => {
     
     `,
     onUpdate({ editor }) {
-      findCommentsAndStoreValues();
-
+      findCommentsAndStoreValues(editor);
       setCurrentComment(editor);
     },
 
     onSelectionUpdate({ editor }) {
       setCurrentComment(editor);
-
+      setIsCommentModeOn(true)
       setIsTextSelected(!!editor.state.selection.content().size);
+    },
+
+    onCreate({ editor }) {
+      findCommentsAndStoreValues(editor)
     },
 
     editorProps: {
@@ -165,8 +169,6 @@ const Tiptap = () => {
   //  #Comments Module Start
   const [activeTab, setActiveTab] = useState(0);
 
-  const [isCommentModeOn, setIsCommentModeOn] = useState(true);
-
   const [currentUserName, setCurrentUserName] = useState("Test User");
 
   const [commentText, setCommentText] = useState("");
@@ -179,37 +181,36 @@ const Tiptap = () => {
 
   const formatDate = (d) => (d ? format(new Date(d), dateTimeFormat) : null);
 
-  const [activeCommentsInstance, setActiveCommentsInstance] = useState({});
-
+  const [activeCommentsInstance, setActiveCommentsInstance] = useState({
+    uuid:"",
+    comments:""
+  });
   const [allComments, setAllComments] = useState([]);
 
-  const findCommentsAndStoreValues = () => {
-    const proseMirror = document.querySelector(".ProseMirror");
-
-    const comments = proseMirror?.querySelectorAll("span[data-comment]");
-
-    const tempComments = [];
-
-    if (!comments) {
-      setAllComments([]);
-      return;
-    }
-
-    comments.forEach((node) => {
-      const nodeComments = node.getAttribute("data-comment");
-
-      const jsonComments = nodeComments ? JSON.parse(nodeComments) : null;
-
-      if (jsonComments !== null) {
-        tempComments.push({
-          node,
-          jsonComments,
-        });
-      }
-    });
-
-    setAllComments(tempComments);
-  };
+  const findCommentsAndStoreValues = (editor) => {
+    const tempComments = []
+  
+    editor?.state.doc.descendants((node, pos) => {
+      const { marks } = node
+      marks.forEach((mark) => {
+        if (mark.type.name === 'comment') {
+          const markComments = mark.attrs.comment;
+          const jsonComments = markComments ? JSON.parse(markComments) : null;
+  
+          if (jsonComments !== null) {
+            tempComments.push({
+              node,
+              jsonComments,
+              from: pos,
+              to: pos + (node.text?.length || 0),
+              text: node.text,
+            });
+          }
+        }
+      })
+    })
+    setAllComments([...tempComments])
+  }
 
   const setCurrentComment = (editor) => {
     const newVal = editor.isActive("comment");
@@ -218,9 +219,7 @@ const Tiptap = () => {
       setTimeout(() => setShowCommentMenu(newVal), 50);
 
       setShowAddCommentSection(!editor.state.selection.empty);
-
       const parsedComment = JSON.parse(editor.getAttributes("comment").comment);
-
       parsedComment.comment =
         typeof parsedComment.comments === "string"
           ? JSON.parse(parsedComment.comments)
@@ -284,10 +283,22 @@ const Tiptap = () => {
     else editor?.setEditable(true);
   };
 
+  const focusContent = ({ from, to }) => {
+    editor?.chain().setTextSelection({ from, to }).run()
+  }
+
+  const handelActiveThread=(clickedComment)=>{
+    focusContent({ from: clickedComment.from, to: clickedComment.to })
+    setActiveCommentsInstance({
+      uuid:clickedComment.jsonComments.uuid,
+      comments:clickedComment.jsonComments.comments,
+      comment:clickedComment.jsonComments.comments
+    })
+  }
+
   useEffect(() => {
     setTimeout(findCommentsAndStoreValues, 100);
   }, []);
-
   // #Comments Module End
   return (
     <>
@@ -391,6 +402,8 @@ const Tiptap = () => {
                 <TemplateCommentDiv>
                   {allComments.map((comment, i) => {
                     return (
+                      <MainDivComments key={i+"comment-box"} onClick={()=>handelActiveThread(comment)}>
+                      <h3>{"  -  "+comment.text} 💬</h3>
                       <CommentBox key={i + "external_comment"}>
                         {comment.jsonComments.comments.map((jsonComment, j) => {
                           return (
@@ -453,6 +466,7 @@ const Tiptap = () => {
                           </section>
                         )}
                       </CommentBox>
+                      </MainDivComments>
                     );
                   })}
                 </TemplateCommentDiv>
@@ -466,7 +480,7 @@ const Tiptap = () => {
           tippy-options={{ duration: 100, placement: "bottom" }}
           editor={editor}
           className="bubble-menu"
-          // shouldShow={() => (isCommentModeOn && isTextSelected && !activeCommentsInstance.uuid)}
+          // shouldShow={({editor}) => (isCommentModeOn &&!editor.state.selection.empty && !activeCommentsInstance.uuid)}
         >
           <section className="comment-adder-section bg-white shadow-lg">
             <textarea
