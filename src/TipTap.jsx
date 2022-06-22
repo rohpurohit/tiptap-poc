@@ -36,16 +36,12 @@ import {
   Tabs,
   TemplateCommentDiv,
 } from "./styles";
-import * as Y from "yjs";
-import Collaboration from "@tiptap/extension-collaboration";
-import { WebrtcProvider } from "y-webrtc";
 import Placeholder from "@tiptap/extension-placeholder";
 import Mention from "@tiptap/extension-mention";
 import suggestion from "./Mentions/Suggestion";
 import { getSuggestions } from "./Mentions/SuggestionItems";
-import { HocuspocusProvider } from "@hocuspocus/provider";
-// import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import Realtime from "./Realtime";
+import DraggableItem from "./Draggable/DraggableItem";
 
 const dateTimeFormat = "dd.MM.yyyy HH:mm";
 const CustomParagraph = Paragraph.extend({
@@ -53,6 +49,7 @@ const CustomParagraph = Paragraph.extend({
     return ["div", mergeAttributes(HTMLAttributes), 0];
   },
 });
+
 const CustomLink = Link.extend({
   addNodeView() {
     return ReactNodeViewRenderer(Preview);
@@ -78,6 +75,7 @@ const Tiptap = () => {
     extensions: [
       StarterKit,
       Image,
+      DraggableItem,
       CustomLink.configure({
         linkOnPaste: false,
       }),
@@ -113,7 +111,7 @@ const Tiptap = () => {
       PasteHandler,
       SnippetExtension,
     ],
-    content: "",
+    content: ``,
     onUpdate({ editor }) {
       findCommentsAndStoreValues(editor);
       setCurrentComment(editor);
@@ -351,7 +349,7 @@ const Tiptap = () => {
           </Button>
         </section>
         <main style={{ display: "flex" }}>
-          <div style={{ flex: "1 1 30%", marginRight: "4em" }}>
+          <div style={{ flex: "1 1 30%",height:"70vh", marginRight: "4em" }}>
             <MenuBar editor={editor} />
             <EditorContent className="editor" editor={editor} />
           </div>
@@ -502,7 +500,7 @@ const Tiptap = () => {
             value={inputValue}
             onChange={handleInputChange}
             onPaste={handleInputChange}
-            placeHolder={"paste figma link"}
+            placeholder={"paste figma link"}
             size="50"
           />
           <button
