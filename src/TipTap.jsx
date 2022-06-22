@@ -36,24 +36,20 @@ import {
   Tabs,
   TemplateCommentDiv,
 } from "./styles";
-import * as Y from "yjs";
-import Collaboration from "@tiptap/extension-collaboration";
-import { WebrtcProvider } from "y-webrtc";
 import Placeholder from "@tiptap/extension-placeholder";
 import Mention from "@tiptap/extension-mention";
 import suggestion from "./Mentions/Suggestion";
 import { getSuggestions } from "./Mentions/SuggestionItems";
-import { HocuspocusProvider } from "@hocuspocus/provider";
-import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import Realtime from "./Realtime";
 import DraggableItem from "./Draggable/DraggableItem";
-const dateTimeFormat = "dd.MM.yyyy HH:mm";
 
+const dateTimeFormat = "dd.MM.yyyy HH:mm";
 const CustomParagraph = Paragraph.extend({
   renderHTML({ HTMLAttributes }) {
     return ["div", mergeAttributes(HTMLAttributes), 0];
   },
 });
+
 const CustomLink = Link.extend({
   addNodeView() {
     return ReactNodeViewRenderer(Preview);
@@ -71,21 +67,7 @@ const snippets = [
       "<p><strong>This is bold.</strong> <em>This is italic. </em><code>This is code</code></p>",
   },
 ];
-// const provider = new HocuspocusProvider({
-//   url: "https://b14d-45-119-57-235.in.ngrok.io",
-//   name: "example-document",
-// });
-// const ydoc = new Y.Doc();
-// const provider = new WebrtcProvider("your-room-name", ydoc, {
-//   signaling: ["wss://35.89.140.122:4444"],
-// });
 
-const ydoc = new Y.Doc();
-const provider = new WebrtcProvider("your-room-name", ydoc, {
-  signaling: ["ws://35.89.140.122:4444"],
-});
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Tiptap = () => {
   const [isCommentModeOn, setIsCommentModeOn] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState("");
@@ -105,20 +87,12 @@ const Tiptap = () => {
           render: renderItems,
         },
       }),
-      Realtime,
-      // Collaboration.configure({
-      //   document: ydoc,
-      // }),
-      // Collaboration.configure({
-      //   document: provider.document,
-      // }),
-      // CollaborationCursor.configure({
-      //   provider,
-      //   user: {
-      //     name: "Cyndi Lauper",
-      //     color: "#f783ac",
-      //   },
-      // }),
+      Realtime.configure({
+        user: {
+          name: "Cyndi Lauper",
+          color: "#f783ac",
+        },
+      }),
       Placeholder.configure({
         placeholder: "use / command to see different options",
       }),
@@ -326,6 +300,8 @@ const Tiptap = () => {
   useEffect(() => {
     setTimeout(findCommentsAndStoreValues, 100);
   }, []);
+
+  const html = editor && editor.getHTML();
 
   // useEffect(() => {
   //   if (editor && editor.isFocused && inputValue.length < 1) {

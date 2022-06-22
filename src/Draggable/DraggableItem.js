@@ -28,6 +28,16 @@ export default Node.create({
     ];
   },
 
+  addKeyboardShortcuts() {
+    return {
+      'Shift-Shift': () => this.editor
+      .chain()
+      .focus()
+      .toggleWrap(`draggableItem`)
+      .run()
+    }
+  },
+
   addNodeView() {
     return ReactNodeViewRenderer(Dagger);
   },
